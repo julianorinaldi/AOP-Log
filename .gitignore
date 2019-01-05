@@ -6,3 +6,7 @@
 /AOPExample/.vs/AOPExample/v15
 /AOPExample/AOPLibrary/obj/Debug
 /AOPExample/ConsoleAOPTest/obj/Debug
+/AOPExample/AOPLibrary/bin/Debug
+/AOPExample/ConsoleAOPTest/bin/Debug
+/AOPExample/packages
+*.user
