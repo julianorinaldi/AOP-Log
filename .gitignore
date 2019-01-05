@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/AOPExample/.vs/AOPExample/v15/Server/sqlite3
+/AOPExample/.vs/AOPExample/v15
+/AOPExample/AOPLibrary/obj/Debug
+/AOPExample/ConsoleAOPTest/obj/Debug
