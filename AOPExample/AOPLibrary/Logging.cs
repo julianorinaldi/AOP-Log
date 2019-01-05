@@ -14,6 +14,7 @@ namespace AOPLibrary
 
         public IEnumerable<IAdvice> Advise(MethodBase method)
         {
+
             yield return Advice.Basic.Before((instance, arguments) =>
             {
                 lock (WatchManagement)

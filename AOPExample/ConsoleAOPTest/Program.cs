@@ -1,6 +1,8 @@
 ﻿using AOPLibrary;
 using NConcern;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace ConsoleAOPTest
@@ -9,12 +11,22 @@ namespace ConsoleAOPTest
     {
         static void Main(string[] args)
         {
-            Aspect.Weave<Logging>(typeof(Example));
+
+            // Existe algumas limitações
+            // Não funcionou com classes Staticas
+            // Não funciona para métodos privados
+            
+            // Mas é uma fácil maneira de atingir praticamente todo o sistema com pouca alteração.
+
+            foreach (var type in GetAllClassByExecutionAssemblies())
+            {
+                if (IsValidType(type))
+                    Aspect.Weave<Logging>(type);
+            }
+
 
             Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] ===> Este comando não está em um método externo, mas o próximo estará.");
-
             Console.WriteLine(); Console.WriteLine();
-
 
             Thread thread1 = new Thread(new ThreadStart(ExecuteThread));
             thread1.Start();
@@ -40,7 +52,7 @@ namespace ConsoleAOPTest
             }
             catch { }
 
-
+            Example2 example2 = new Example2();
 
             Console.ReadKey();
         }
@@ -59,6 +71,34 @@ namespace ConsoleAOPTest
             }
         }
 
+        static Type[] GetAllClassByExecutionAssemblies()
+        {
+            // Transformar em parâmetro
+            var assembliesFilter = new string[] { "AOPLibrary", "ConsoleAOPTest" };
 
+            List<Type> typeList = new List<Type>();
+            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                if (assembliesFilter.Contains(assembly.GetName().Name))
+                    typeList.AddRange(assembly.GetTypes());
+            }
+
+            return typeList.ToArray();
+        }
+
+        static bool IsValidType(Type type)
+        {
+            if (type.FullName != null
+                // Representa que não são as classe de injeção do Neptune
+                && !type.FullName.ToUpper().Contains("NEPTUNE")
+                // Representa uma classe não estática
+                && !type.IsAbstract && !type.IsSealed
+                // Representa uma classe pública 
+                && type.IsPublic)
+                return true;
+
+            return false;
+        }
     }
 }
